@@ -72,10 +72,11 @@ def 凎(课程代号:int):
     r = requests.get(视频网址,headers=headers,stream=True)
     #锁.acquire()
     玕(f"[DOWNLOAD]{本地文件名称}")
-    with open(本地路径 + 本地文件名称, 'wb') as f:
+    with open(本地路径 + 本地文件名称+".tmp", 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
+    os.rename(本地路径 + 本地文件名称+".tmp",本地路径 + 本地文件名称)
     玕(f"[SAVED]   {本地文件名称}")
     #锁.release()
 def 赣():
