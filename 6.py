@@ -59,18 +59,23 @@ def 凎(course_id:int):
         local_path = path1
     local_file_name = f"{subject}_{course_id}_{title}.mp4"
     if os.path.isfile(local_path + local_file_name):
-        logging.debug(f"{course_id}_File already exists")
-        return
+        r1 = requests.head(mp4_URL,headers=headers)
+        len01 = int(r1.headers['Content-Length'])
+        if len01 >= os.path.getsize(local_path+local_file_name)+10485760:
+            proprint(f"[EXIST]   {local_file_name}")
+            return
+        proprint(f"[WARNING] {local_file_name}Exists but is not completed.")
+        proprint(f"[WARNING] Program will download it again.")
     lock.acquire()
     #print(f"{local_file_name}_Downloading")
     lock.release()
     r = requests.get(mp4_URL,headers=headers,stream=True)
     #lock.acquire()
-    proprint(f"下载：{local_file_name}")
+    proprint(f"[DOWNLOAD]{local_file_name}")
     with open(local_path + local_file_name, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
             f.write(chunk)
-    proprint(f"保存了：{local_file_name}")
+    proprint(f"[SAVED]   {local_file_name}")
     #lock.release()
 def 赣():
     while True:

@@ -53,17 +53,22 @@ def 凎(course_id:int):
     local_path = "F:\\netClass\\"
     local_file_name = f"{subject}_{course_id}_{title}.mp4"
     if os.path.isfile(local_path + local_file_name):
-        logging.debug(f"{course_id}_File already exists")
-        return
+        r1 = requests.head(mp4_URL,headers=headers)
+        len01 = int(r1.headers['Content-Length'])
+        if len01 <= os.path.getsize(local_path+local_file_name)+10485760:
+            logging.info(f"[EXIST]   {local_file_name}")
+            return
+        logging.info(f"[WARNING] {local_file_name}Exists but is not completed.")
     lock.acquire()
-    logging.info(f"{local_file_name}_Downloading")
+    logging.info(f"[DOWNLOAD]{local_file_name}")
     lock.release()
     r = requests.get(mp4_URL,headers=headers)
     lock.acquire()
-    logging.info(f"{local_file_name}_Saving")
+    logging.info(f"[SAVING]  {local_file_name}")
     with open(local_path + local_file_name, 'wb') as f:
         f.write(r.content)
     lock.release()
+    logging.info(f"[SAVED]   {local_file_name}")
 def 赣():
     while True:
         findone = False
