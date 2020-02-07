@@ -5,6 +5,7 @@ import os.path
 import logging
 lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
+__author__ = "Gao Mengkai"
 
 START = 6160
 END = 6666
@@ -52,12 +53,15 @@ def 凎(course_id:int):
     #DOWNLOAD AND SAVE FILE
     local_path = "F:\\netClass\\"
     local_file_name = f"{subject}_{course_id}_{title}.mp4"
-    if os.path.isfile(local_path + local_file_name):
+    if os.path.isfile(local_path + local_file_name):#if file already exists
+        #To check if file is completed
         r1 = requests.head(mp4_URL,headers=headers)
         len01 = int(r1.headers['Content-Length'])
+        #Allow 10MB broken
         if len01 <= os.path.getsize(local_path+local_file_name)+10485760:
             logging.info(f"[EXIST]   {local_file_name}")
             return
+        #Cannot return: Download it again
         logging.info(f"[WARNING] {local_file_name}Exists but is not completed.")
     lock.acquire()
     logging.info(f"[DOWNLOAD]{local_file_name}")
