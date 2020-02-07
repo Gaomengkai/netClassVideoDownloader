@@ -66,14 +66,11 @@ def 凎(课程代号:int):
             return
         玕(f"[WARNING] {本地文件名称}Exists but is not completed.")
         玕(f"[WARNING] Program will download it again.")
-    锁.acquire()
-    #print(f"{本地文件名称}_Downloading")
-    锁.release()
     r = requests.get(视频网址,headers=headers,stream=True)
     #锁.acquire()
     玕(f"[DOWNLOAD]{本地文件名称}")
     with open(本地路径 + 本地文件名称+".tmp", 'wb') as f:
-        for chunk in r.iter_content(chunk_size=1024):
+        for chunk in r.iter_content(chunk_size=2048):
             if chunk:
                 f.write(chunk)
     os.rename(本地路径 + 本地文件名称+".tmp",本地路径 + 本地文件名称)
@@ -93,12 +90,10 @@ def 赣():
         if not 领到任务:
             break
 if __name__ == '__main__':
-    i = int(input("输入起始编号："))
-    j = int(input("输入终止编号："))
-    if i <= j:
-        开始 = i;结束 = j
-    else:
-        开始 = j;结束 = i
+    甲 = int(input("输入起始编号："))
+    乙 = int(input("输入终止编号："))
+    开始 = min([甲,乙])
+    结束 = max([甲,乙])
     路径 = str(input(r"输入保存位置（如 D:\网课内容\）（若目录不存在将自动创建）:"))
     if not os.path.exists(路径):
         os.mkdir(路径)
@@ -108,9 +103,9 @@ if __name__ == '__main__':
     线程池 = []
     for _ in range(3):
         线程池.append(threading.Thread(target=赣))
-    for i in range(3):
-        线程池[i].start()
-    for i in range(3):
-        线程池[i].join()
+    for 甲 in range(3):
+        线程池[甲].start()
+    for 甲 in range(3):
+        线程池[甲].join()
     玕(f"\nI have finished to download {开始} to {结束}, tired but happy")
     os.system("PAUSE")
