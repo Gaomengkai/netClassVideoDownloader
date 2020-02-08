@@ -23,7 +23,7 @@ def 凎(course_id):
         return
     text = r.text
     try:
-        _ = re.findall("https.*mp4",text)[0]
+        mp4_URL = re.findall("https.*mp4",text)[0]
     except:
         logging.debug(f"{course_id}_Video file does not exist in this page.")
         return
@@ -39,7 +39,7 @@ def 凎(course_id):
 
     #CREATE DICT
     lock.acquire()
-    courses_list.append([course_id,subject,school,tescher,title])
+    courses_list.append([course_id,subject,school,tescher,title,mp4_URL])
     lock.release()
 def 淦(a_list):
     #a method to stick the list
