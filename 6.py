@@ -83,17 +83,35 @@ def 赣():
             凎(当前编号)
         except StopIteration:
             return
+def 肝(string:str):
+    '''
+    param string:string like 1,2-6,8
+    return: a list of numbers
+    '''
+    x1 = string.split(',')
+    rtn = list()
+    for x in x1:
+        if '-' not in x:
+            rtn.append(int(x))
+        else:
+            x = x.split('-')
+            rtn += [a for a in range(int(x[0]),int(x[1])+1)]
+    return rtn
+
 if __name__ == '__main__':
-    甲 = int(input("输入起始编号："))
-    乙 = int(input("输入终止编号："))
-    开始 = min([甲,乙])
-    结束 = max([甲,乙])
+    print("用英文的,和-分割")
+    输入 = input("输入序号范围，比如6200,6205-6209,6230：")
+    解析的课程范围 = 肝(输入)
+    #甲 = int(input("输入起始编号："))
+    #乙 = int(input("输入终止编号："))
+    #开始 = min([甲,乙])
+    #结束 = max([甲,乙])
     路径 = str(input(r"输入保存位置（如 D:\网课内容\）（若目录不存在将自动创建）:"))
     if not os.path.exists(路径):
         os.mkdir(路径)
     if 路径[-1] != "\\":
         路径 = 路径 + "\\"
-    课程们 = range(开始,结束+1)
+    课程们 = iter(解析的课程范围)
     线程池 = []
     for _ in range(3):
         线程池.append(threading.Thread(target=赣))
