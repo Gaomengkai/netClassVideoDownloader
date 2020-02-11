@@ -9,7 +9,7 @@ __author__ = "Gao Mengkai"
 
 START = 6160
 END = 6666
-course_ids = range(START,END+1)
+course_ids = iter(range(START,END+1))
 finished_ids = []#int list
 文综 = ["政治","地理","历史"]
 def proprint(s):
@@ -75,17 +75,11 @@ def 凎(course_id:int):
     logging.info(f"[SAVED]   {local_file_name}")
 def 赣():
     while True:
-        findone = False
-        for current_id in course_ids:
-            if current_id not in finished_ids:
-                lock.acquire()
-                finished_ids.append(current_id)
-                findone = True
-                lock.release()
-                凎(current_id)
-                break
-        if not findone:
-            break
+        try:
+            current_id = next(course_ids)
+            凎(current_id)
+        except StopIteration:
+            return
 if __name__ == '__main__':
     th_pool = []
     for _ in range(3):
