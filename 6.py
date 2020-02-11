@@ -12,7 +12,7 @@ __author__ = "Gao Mengkai"
 开始 = 6160
 结束 = 6513
 路径 = ""
-课程们 = range(开始,结束+1)
+课程们 = iter(range(开始,结束+1))
 已经完成 = []#int list
 文综 = ["政治","地理","历史"]
 def 玕(s):
@@ -49,7 +49,7 @@ def 凎(课程代号:int):
     #GENERATE HEADERS
     headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-    'Referer': 播放页网址
+    'Referer': "https://school.jledu.com/"
     }
 
     #DOWNLOAD AND SAVE FILE
@@ -78,28 +78,40 @@ def 凎(课程代号:int):
     #锁.release()
 def 赣():
     while True:
-        领到任务 = False
-        for 当前任务 in 课程们:
-            if 当前任务 not in 已经完成:
-                锁.acquire()
-                已经完成.append(当前任务)
-                领到任务 = True
-                锁.release()
-                凎(当前任务)
-                break
-        if not 领到任务:
-            break
+        try:
+            当前编号 = next(课程们)
+            凎(当前编号)
+        except StopIteration:
+            return
+def 肝(string:str):
+    '''
+    param string:string like 1,2-6,8
+    return: a list of numbers
+    '''
+    x1 = string.split(',')
+    rtn = list()
+    for x in x1:
+        if '-' not in x:
+            rtn.append(int(x))
+        else:
+            x = x.split('-')
+            rtn += [a for a in range(int(x[0]),int(x[1])+1)]
+    return rtn
+
 if __name__ == '__main__':
-    甲 = int(input("输入起始编号："))
-    乙 = int(input("输入终止编号："))
-    开始 = min([甲,乙])
-    结束 = max([甲,乙])
+    print("用英文的,和-分割")
+    输入 = input("输入序号范围，比如6200,6205-6209,6230：")
+    解析的课程范围 = 肝(输入)
+    #甲 = int(input("输入起始编号："))
+    #乙 = int(input("输入终止编号："))
+    #开始 = min([甲,乙])
+    #结束 = max([甲,乙])
     路径 = str(input(r"输入保存位置（如 D:\网课内容\）（若目录不存在将自动创建）:"))
     if not os.path.exists(路径):
         os.mkdir(路径)
     if 路径[-1] != "\\":
         路径 = 路径 + "\\"
-    课程们 = range(开始,结束+1)
+    课程们 = iter(解析的课程范围)
     线程池 = []
     for _ in range(3):
         线程池.append(threading.Thread(target=赣))
