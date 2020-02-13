@@ -69,7 +69,13 @@ def 网页淦(a_dict):
     rtn = str()
     #化学-王守来-<a href="http://baidu.com" target="_blank">课程</a>
     rtn = f"{a_dict['subject']}-{a_dict['teacher']}-<a href=\"{a_dict['URL']}\" target=\"_blank\">{a_dict['title']}</a>"
-    return rtn    
+    return rtn
+def md凎(a):
+    rtn = str()
+    rtn = f"{a['subject']}-{a['teacher']}-[{a['title']}]({a['URL']} \"{a['title']}\")"
+    rtn += "\n\n"
+    return rtn
+
 def 赣():
     while True:
         try:
@@ -77,6 +83,24 @@ def 赣():
             凎(current_id)
         except StopIteration:
             return
+def make_a_md_file(courses_list,filename):
+    temp_subj = list()
+    with open(filename,"w",encoding="utf-8") as f:
+        f.write("title: netClass Video List\n")
+        import time
+        localtime = time.asctime( time.localtime(time.time()) )
+        f.write("date: " + localtime + "\n")
+        f.write("category: netClass" + "\n\n")
+        f.write("# netClass List\n\n")
+        f.write("### Updated at {}\n\n".format(localtime))
+        for c in courses_list:
+            if c['subject'] not in temp_subj:
+                f.write(f"## {c['subject']}\n\n")
+                temp_subj.append(c['subject'])
+            f.write(md凎(c))
+def update_blog(blog_root:str, web_root:str):
+    os.system("cd {} && pelican content".format(blog_root))
+
 if __name__ == '__main__':
     th_pool = []
     for _ in range(MAX_THREADS):
@@ -93,7 +117,7 @@ if __name__ == '__main__':
         f.write(localtime+"\n")
         for c in courses_list:
             f.write(淦(c) + "\n")
-    with open("4.html","w",encoding="utf-8") as f:
+    with open("D:\\Documents\\Programs\\gaomengkai.github.io\\4.html","w",encoding="utf-8") as f:
         import time
         localtime = time.asctime( time.localtime(time.time()) )
         f.write("<!DOCTYPE HTML>")
@@ -102,3 +126,6 @@ if __name__ == '__main__':
         for c in courses_list:
             f.write(网页淦(c) + "<br>")
         f.write("</body></html>")
+    make_a_md_file(courses_list,"D:\\Documents\\Programs\\blog\\content\\" + "courses_list.md")
+    #update_blog("D:\\Documents\\Programs\\blog\\content\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
+    

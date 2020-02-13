@@ -7,9 +7,10 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 6160
+START = 6513
 END = 6666
 course_ids = iter(range(START,END+1))
+#course_ids = iter([6211])
 finished_ids = []#int list
 文综 = ["政治","地理","历史"]
 def proprint(s):
@@ -42,7 +43,7 @@ def 凎(course_id:int):
     #GET SUBJECT
     subject = re.findall("学科： (.*)<",text)[0]
     if subject in 文综:
-        logging.debug(f"{course_id}_{subject}————已经跳过下载")
+        logging.info(f"[SKIP]    {course_id} is {subject}")
         return
     #GENERATE HEADERS
     headers = {
