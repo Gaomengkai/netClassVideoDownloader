@@ -7,7 +7,7 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 6513
+START = 6515
 END = 6666
 course_ids = iter(range(START,END+1))
 #course_ids = iter([6211])
@@ -23,7 +23,7 @@ listen_code = ""
 def 凎(course_id:int):
     page_URL = base_URL + str(course_id) + "/"
     
-    #GET mp4_URL AND TITLE
+    #GET mp4_URL 
     r = requests.get(page_URL)
     if r.status_code != 200:
         return
@@ -33,18 +33,20 @@ def 凎(course_id:int):
     except:
         logging.debug(f"{course_id}_Video file does not exist in this page.")
         return
+    
     #GET SCHOOL
     school = re.findall("<p class=\"fsize14\">吉林市第一中学</p>",text)
     if school == []:
         return
-    #GET TITLE
-    title = re.findall("<p class=\"title\">(.*)</p>",text)[0]
-
+    
     #GET SUBJECT
     subject = re.findall("学科： (.*)<",text)[0]
     if subject in 文综:
         logging.info(f"[SKIP]    {course_id} is {subject}")
         return
+
+    #GET TITLE
+    title = re.findall("<p class=\"title\">(.*)</p>",text)[0]
     #GENERATE HEADERS
     headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',

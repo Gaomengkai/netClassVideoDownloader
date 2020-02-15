@@ -127,5 +127,5 @@ if __name__ == '__main__':
             f.write(网页淦(c) + "<br>")
         f.write("</body></html>")
     make_a_md_file(courses_list,"D:\\Documents\\Programs\\blog\\content\\" + "courses_list.md")
-    #update_blog("D:\\Documents\\Programs\\blog\\content\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
+    update_blog("D:\\Documents\\Programs\\blog\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
     
