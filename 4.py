@@ -1,13 +1,10 @@
 import os
 import os.path
+gaosan = list()
 
-path = "F:\\netClass\\"
-for x,y,files in os.walk(path):
-    a=files
-    break
-for b in a:
-    if b[0] == " ":
-        if os.path.isfile(path+b[1:]):
-            print(f"remove{b}")
-            os.remove(path+b[1:])
-        os.rename(path+b,path+b[1:])
+with open("4.csv", "r") as f:
+    gaosan = f.read().split("\n")
+gaosan = list(set(gaosan))
+with open("4,csv","w") as f:
+    for te in gaosan:
+        f.write(te + "\n")

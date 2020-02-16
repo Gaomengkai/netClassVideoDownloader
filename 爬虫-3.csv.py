@@ -10,10 +10,13 @@ START = 6158
 END = 6666
 MAX_THREADS = 80
 course_ids = iter(range(START,END+1))
-finished_ids = []
 courses_list = []
+teachers3 = list()
 base_URL = r"https://school.jledu.com/front/demand/play/"
-
+def init_3():
+    global teachers3
+    with open("4.csv","r") as f:
+        teachers3 = f.read().split("\n")
 def 凎(course_id):
     page_URL = base_URL + str(course_id) + "/"
     
@@ -37,6 +40,14 @@ def 凎(course_id):
     #GET TESCHER
     teacher = re.findall("主讲：(.*)<",text)[0]
 
+    #GET GRADE
+    '''
+    grade = "高二"
+    with open("4.csv","r") as f:
+        teachers3 = f.read().split("\n")
+        if teacher in teachers3:
+            grade = "高三"
+    '''
     #CREATE DICT
     dictionary = dict()
     if teacher in ['鄂春雨','刘波']:
@@ -48,6 +59,7 @@ def 凎(course_id):
     if teacher in ['梁红梅','林亚楠']:
         subject = "化学奥"
     dictionary['teacher'] = teacher
+    #dictionary['grade'] = grade
     dictionary['id'] = course_id
     dictionary['title'] = title
     dictionary['subject'] = subject
@@ -91,17 +103,18 @@ def make_a_md_file(courses_list,filename):
         localtime = time.asctime( time.localtime(time.time()) )
         f.write("date: " + localtime + "\n")
         f.write("category: netClass" + "\n\n")
-        f.write("# netClass List\n\n")
+        #f.write("# netClass List\n\n")
         f.write("### Updated at {}\n\n".format(localtime))
         for c in courses_list:
             if c['subject'] not in temp_subj:
-                f.write(f"## {c['subject']}\n\n")
+                f.write(f"# {c['subject']}\n\n")
                 temp_subj.append(c['subject'])
             f.write(md凎(c))
 def update_blog(blog_root:str, web_root:str):
-    os.system("cd {} && pelican content".format(blog_root))
+    os.system("7.cmd")
 
 if __name__ == '__main__':
+    #init_3()
     th_pool = []
     for _ in range(MAX_THREADS):
         th_pool.append(threading.Thread(target=赣))
