@@ -138,7 +138,7 @@ if __name__ == '__main__':
         f.write("Updated: "+localtime+"<br>")
         for c in courses_list:
             f.write(网页淦(c) + "<br>")
-        f.write("</body></html>")git
+        f.write("</body></html>")
     make_a_md_file(courses_list,"D:\\Documents\\Programs\\blog\\content\\" + "courses_list.md")
     update_blog("D:\\Documents\\Programs\\blog\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
     print("\nLAST ONE:{}".format(sorted(courses_list,key=lambda x:x['id'])[-1]))
