@@ -7,8 +7,8 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 6515
-END = 6666
+START = 6400
+END = 6700
 course_ids = iter(range(START,END+1))
 #course_ids = iter([6211])
 finished_ids = []#int list
@@ -65,7 +65,7 @@ def 凎(course_id:int):
             logging.info(f"[EXIST]   {local_file_name}")
             return
         #Cannot return: Download it again
-        logging.info(f"[WARNING] {local_file_name}Exists but is not completed.")
+        logging.info(f"[WARNING] {local_file_name}: Exists but is not completed.")
     lock.acquire()
     logging.info(f"[DOWNLOAD]{local_file_name}")
     lock.release()

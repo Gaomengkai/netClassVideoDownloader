@@ -52,7 +52,7 @@ def 凎(course_id):
     dictionary = dict()
     if teacher in ['鄂春雨','刘波']:
         subject = "数学奥"
-    if teacher == '王珊':
+    if teacher == '王珊' or (subject == '数学' and '文科' in title):
         subject = "数学文"
     if teacher == '崔泽颖':
         subject = "物理奥"
