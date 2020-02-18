@@ -84,7 +84,7 @@ def 网页淦(a_dict):
     return rtn
 def md凎(a):
     rtn = str()
-    rtn = f"{a['subject']}-{a['teacher']}-[{a['title']}]({a['URL']} \"{a['title']}\")"
+    rtn = f"{a['subject']}-{a['teacher']}-[{a['title']}]({a['URL']} \"{a['id']}_{a['title']}\")"
     rtn += "\n\n"
     return rtn
 

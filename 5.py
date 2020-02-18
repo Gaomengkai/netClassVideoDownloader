@@ -7,7 +7,7 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 6400
+START = 6600
 END = 6700
 course_ids = iter(range(START,END+1))
 #course_ids = iter([6211])
@@ -47,6 +47,9 @@ def 凎(course_id:int):
 
     #GET TITLE
     title = re.findall("<p class=\"title\">(.*)</p>",text)[0]
+    if '18级' in title or '高二' in title:
+        logging.info(f"[SKIP]    {course_id} is '18级'")
+        return
     #GENERATE HEADERS
     headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
