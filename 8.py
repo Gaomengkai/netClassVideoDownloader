@@ -7,16 +7,21 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 
 START = 6158
-END = 6666
-MAX_THREADS = 80
+END = 6800
+MAX_THREADS = 30
 course_ids = iter(range(START,END+1))
 courses_list = []
-teachers3 = list()
 base_URL = r"https://school.jledu.com/front/demand/play/"
+gaosan = list()
 def init_3():
-    global teachers3
-    with open("4.csv","r") as f:
-        teachers3 = f.read().split("\n")
+    global gaosan
+    url = r'https://school.jledu.com/front/demand/demand_list_one?page.currentPage=1&page.pageSize=512&queryDemand.subjectId=&queryDemand.showStatus=0&queryDemand.headStatus=&queryDemand.sort=2&queryDemand.courseName=&queryDemand.loginType=1&queryDemand.demandType=1&queryDemand.subject='
+    r = requests.get(url)
+    js = r.json()
+    entity = js['entity']
+    cs = sorted(entity,key=lambda x:x['id'])
+    gaosan = list(map(lambda x:int(x['id']),cs))
+
 def 凎(course_id):
     page_URL = base_URL + str(course_id) + "/"
     
@@ -33,21 +38,19 @@ def 凎(course_id):
     title = re.findall("<p class=\"title\">.*</p>",text)[0][17:][:-4]
     #GET SCHOOL
     school = re.findall("<p class=\"fsize14\">.*</p>",text)[0][19:][:-4]
-    #if school != "吉林市第一中学":
-    #   return
+    if (school != "吉林市第一中学") and (school != "吉林市第一中学校"):
+       return
     #GET SUBJECT
     subject = re.findall("学科： (.*)<",text)[0]
     #GET TESCHER
-    teacher = re.findall("主讲：(.*)<",text)[0]
+    try:
+        teacher = re.findall("主讲：(.*)<",text)[0]
+    except IndexError:
+        teacher = re.findall("主讲教师：(.*)<",text)[0]
 
     #GET GRADE
-    '''
-    grade = "高二"
-    with open("4.csv","r") as f:
-        teachers3 = f.read().split("\n")
-        if teacher in teachers3:
-            grade = "高三"
-    '''
+    #grade = "高三" if course_id in gaosan else "高二"
+    
     #CREATE DICT
     dictionary = dict()
     if teacher in ['鄂春雨','刘波']:
@@ -95,16 +98,33 @@ def 赣():
             凎(current_id)
         except StopIteration:
             return
-def make_a_md_file(courses_list,filename):
+def make_a_md_file(courses_list,filename,grade=3):
+    def _grade_sucker(cl:list,gd:int):
+        res = list()
+        for c in cl:
+            if (c['grade'] == '高三' and gd == 3) or (c['grade'] == '高二' and gd == 2):
+                res.append(c)
+        if res == []:
+            raise Exception("res empty!")
+        return res
     temp_subj = list()
+    #courses_list = _grade_sucker(courses_list,grade)
     with open(filename,"w",encoding="utf-8") as f:
-        f.write("title: netClass Video List\n")
+        if grade == 3:
+            f.write("title: netClass Video List\n")
+        elif grade == 2:
+            f.write("title: netClass Video List for GRADE 2\n")
+        else:
+            raise Exception("GRADE ERROR or DOES NOT SUPPORT")
         import time
         localtime = time.asctime( time.localtime(time.time()) )
         f.write("date: " + localtime + "\n")
         f.write("category: netClass" + "\n\n")
         #f.write("# netClass List\n\n")
-        f.write("### Updated at {}\n\n".format(localtime))
+        f.write("# 网课列表（含高二和高三）\n\n")
+        f.write("#### 使用脚本从{}获取\n\n".format(base_URL))
+        f.write("#### Updated at {}\n\n".format(localtime))
+        f.write("#### 最近更新： {}\n\n".format(localtime))
         for c in courses_list:
             if c['subject'] not in temp_subj:
                 f.write(f"# {c['subject']}\n\n")
@@ -124,6 +144,7 @@ if __name__ == '__main__':
         th_pool[i].join()
     print(f"\nI have  爬取了 {START} to {END}, tired but happy")
     courses_list = sorted(courses_list, key=lambda x:(x['subject'],x['id']))
+    #courses_list = sorted(courses_list, key=lambda x:(x['grade'],x['subject'],x['id']))
     with open("3.csv", "w") as f:
         import time
         localtime = time.asctime( time.localtime(time.time()) )
@@ -139,6 +160,7 @@ if __name__ == '__main__':
         for c in courses_list:
             f.write(网页淦(c) + "<br>")
         f.write("</body></html>")
+    #make_a_md_file(courses_list,"D:\\Documents\\Programs\\blog\\content\\" + "courses_list2.md",2)
     make_a_md_file(courses_list,"D:\\Documents\\Programs\\blog\\content\\" + "courses_list.md")
     update_blog("D:\\Documents\\Programs\\blog\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
     print("\nLAST ONE:{}".format(sorted(courses_list,key=lambda x:x['id'])[-1]))
