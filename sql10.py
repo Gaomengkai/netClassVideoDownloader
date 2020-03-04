@@ -3,14 +3,38 @@ import threading,re,requests,os.path,logging,src8,sqlite3
 conn = sqlite3.connect("data2.db")
 
 sql_1 = """
-SELECT *
+SELECT teacher,grade
 FROM demand
-WHERE id BETWEEN 6158 AND 7500
+WHERE id BETWEEN 6158 AND 8000
 AND school="吉林市第一中学"
-AND subject="数学"
-AND title LIKE "%文科%"
 """
-
-sql_2 = 'UPDATE demand SET grade="高中二年级" WHERE title LIKE "%18级%" AND id BETWEEN 6158 AND 7500'
-sql_3 = 'UPDATE demand SET grade="高中三年级" WHERE title LIKE "%二轮%" AND id BETWEEN 6158 AND 7500'
-
+teacher_grade = set()
+for x in conn.execute(sql_1).fetchall():
+    teacher_grade.add(x)
+teachers  = {x[0] for x in teacher_grade}
+tea2 = [x[0] for x in teacher_grade]
+for x in teachers:
+    del tea2[tea2.index(x)]
+print(tea2)
+l3=list()
+for x in teacher_grade:
+    if x[0] in tea2:
+        l3.append(x)
+l3 = sorted(l3,key=lambda x:x[0])
+for x in l3:
+    print(x)
+print()
+d1 = dict()
+for t in tea2:
+    d1[t] = []
+    _tmp = ''
+    p=-1
+    for x in conn.execute("select * from demand where teacher=(?) and id between ? and ?",(t,6158,8000)):
+        if x[2] != _tmp:
+            p+=1
+            d1[t].append({x[2]:1})
+            _tmp =x[2]
+        else:
+            d1[t][p][x[2]]+=1
+print(d1)
+conn.close()

@@ -6,6 +6,6 @@ git add .
 git commit -m "Updating"
 git push origin master
 cd D:\Documents\Programs\netClassVideoDownloader
-git add .
-git commit -m "Huge Update For SQLite"
+git add 3.csv
+git commit -m "3csv Update"
 git push origin master

@@ -5,7 +5,8 @@ import src8
 url = r'https://school.jledu.com/front/demand/demand_list_one'
 base_URL = r"https://school.jledu.com/front/demand/play/"
 currentPage = 1
-pageSize = 80
+pageSize = 200
+START = 6158;END = 7800
 conn = sqlite3.connect("data2.db")
 conn.execute("CREATE TABLE IF NOT EXISTS demand\
     (id INTEGER PRIMARY KEY,\
@@ -37,12 +38,12 @@ while True:
         except sqlite3.IntegrityError:
             pass
             #print("JMP")
-    if currentPage == totalPageSize:
+    if currentPage >= totalPageSize:
         break
 alr_ext = []
 for x in conn.execute('SELECT id from demand where id >6157'):
     alr_ext.append(x[0])
-for i in range(6158,7800):
+for i in range(START,END+1):
     if i not in alr_ext:
         c = src8.genCourseById(i)
         if c != None:
@@ -53,4 +54,4 @@ for i in range(6158,7800):
             print(c.id,c.subject,c.grade,c.title,c.school,c.teacher)
 conn.commit()
 conn.close()
-print("FINISHED%d"%len(alr_ext))
+print("FINISHED %d"%len(alr_ext))

@@ -7,7 +7,7 @@ import src8 as src
 import stdModel as mdl
 
 START = 6158
-END = 7450 #Only import JLYZ
+END = 8000 #Only import JLYZ
 
 # import data from database
 data_base_filename = "data2.db"
@@ -25,7 +25,7 @@ for x in range(len(courses_list)):
         courses_list[x].subject += '奥'
     elif '理科奥' in courses_list[x].title:
         courses_list[x].subject += '奥'
-    if courses_list[x].teacher in ['刘波','鄂春雨']:
+    if '限时训练' in courses_list[x].title and courses_list[x].subject == '数学':
         courses_list[x].subject = '数学奥'
     elif courses_list[x].teacher == '崔泽颖':
         courses_list[x].subject = '物理奥'

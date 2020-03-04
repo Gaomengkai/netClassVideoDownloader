@@ -2,13 +2,17 @@ import re
 import requests
 import threading
 import os.path
+import time
 import logging
+from queue import Queue
 lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 6600
-END = 6700
+START = 7350
+END = 7500
+MAX_THREADS = 4
+q = Queue()
 course_ids = iter(range(START,END+1))
 #course_ids = iter([6211])
 finished_ids = []#int list
@@ -19,11 +23,20 @@ def proprint(s):
     lock.release()
 base_URL = r"https://school.jledu.com/front/demand/play/"
 listen_code = ""
-
+def proinfo(s):
+    lock.acquire()
+    logging.info(s)
+    lock.release()
 def 凎(course_id:int):
     page_URL = base_URL + str(course_id) + "/"
     
     #GET mp4_URL 
+    for _ in range(3):
+        try:
+            r= requests.get(page_URL)
+            break
+        except requests.ConnectionError:
+            time.sleep(0.5)
     r = requests.get(page_URL)
     if r.status_code != 200:
         return
@@ -69,29 +82,41 @@ def 凎(course_id:int):
             return
         #Cannot return: Download it again
         logging.info(f"[WARNING] {local_file_name}: Exists but is not completed.")
-    lock.acquire()
-    logging.info(f"[DOWNLOAD]{local_file_name}")
-    lock.release()
+    proinfo(f"[DOWNLOAD]{local_file_name}")
     r = requests.get(mp4_URL,headers=headers)
-    lock.acquire()
-    logging.info(f"[SAVING]  {local_file_name}")
-    with open(local_path + local_file_name, 'wb') as f:
-        f.write(r.content)
-    lock.release()
-    logging.info(f"[SAVED]   {local_file_name}")
+    q.put([local_path,local_file_name,r.content])
 def 赣():
+    global MAX_THREADS
     while True:
         try:
             current_id = next(course_ids)
             凎(current_id)
         except StopIteration:
+            break
+    proinfo("[THREAD]  DOWNLOADER {} EXIT".format(MAX_THREADS))
+    MAX_THREADS -= 1
+def save_file(local_path,local_file_name,data:bytes):
+    proinfo(f"[SAVING]  {local_file_name}")
+    with open(local_path + local_file_name, 'wb') as f:
+        f.write(data)
+    proinfo(f"[SAVED]   {local_file_name}")
+def save_file_loop():
+    while True:
+        dat = q.get()
+        if dat == 0:
+            proinfo("[THREAD]  SAVER EXIT")
             return
+        save_file(dat[0],dat[1],dat[2])
 if __name__ == '__main__':
     th_pool = []
-    for _ in range(3):
+    downloader_thread = threading.Thread(target=save_file_loop,name='save_file_loop')
+    downloader_thread.start()
+    for _ in range(MAX_THREADS):
         th_pool.append(threading.Thread(target=赣))
-    for i in range(3):
+    for i in range(MAX_THREADS):
         th_pool[i].start()
-    for i in range(3):
+    for i in range(MAX_THREADS):
         th_pool[i].join()
+    q.put(0)
+    downloader_thread.join()
     print(f"\nI have finished to download {START} to {END}, tired but happy")
