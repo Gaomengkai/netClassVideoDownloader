@@ -19,11 +19,13 @@ dat = [x for x in dat]
 # gen list
 courses_list = [mdl.CourseModel(raw[0],raw[1],raw[2],raw[3],raw[4],raw[5]) for raw in dat]
 for x in range(len(courses_list)):
-    if '文科' in courses_list[x].title:
+    if '文科' in courses_list[x].title and courses_list[x].subject not in {'历史','政治','地理'}:
         courses_list[x].subject += '文'
     elif '奥班' in courses_list[x].title:
         courses_list[x].subject += '奥'
     elif '理科奥' in courses_list[x].title:
+        courses_list[x].subject += '奥'
+    elif '文科奥' in courses_list[x].title:
         courses_list[x].subject += '奥'
     if '限时训练' in courses_list[x].title and courses_list[x].subject == '数学':
         courses_list[x].subject = '数学奥'
