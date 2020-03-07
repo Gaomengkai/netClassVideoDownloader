@@ -21,20 +21,24 @@ for x in teacher_grade:
     if x[0] in tea2:
         l3.append(x)
 l3 = sorted(l3,key=lambda x:x[0])
-for x in l3:
-    print(x)
+
 print()
 d1 = dict()
 for t in tea2:
     d1[t] = []
     _tmp = ''
     p=-1
-    for x in conn.execute("select * from demand where teacher=(?) and id between ? and ?",(t,6158,8000)):
+    for x in conn.execute("select * from demand where teacher=(?) and school='吉林市第一中学' and id between ? and ?",(t,6158,8000)):
         if x[2] != _tmp:
             p+=1
-            d1[t].append({x[2]:1})
+            if x[2] !='0':
+                d1[t].append({x[2]:1})
             _tmp =x[2]
         else:
-            d1[t][p][x[2]]+=1
-print(d1)
+            if x[2] !='0':
+                d1[t][p][x[2]]+=1
+d2 = dict()
+for x in d1.keys():
+    d2[x]=[t for t in d1[x][0].keys()][0]
+print(d2)
 conn.close()

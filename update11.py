@@ -58,4 +58,4 @@ src.make_a_md_file(c0,"D:\\Documents\\Programs\\blog\\content\\" + "wz.md","é«˜ä
 # update blog
 src.update_blog("D:\\Documents\\Programs\\blog\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
 
-print("F I N I S H E D")
+print("\nF I N I S H E D")
