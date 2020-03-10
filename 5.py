@@ -10,12 +10,11 @@ logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
 START = 7350
-END = 7500
+END = 8100
 MAX_THREADS = 4
 q = Queue()
 course_ids = iter(range(START,END+1))
-#course_ids = iter([6211])
-finished_ids = []#int list
+finished_ids = [] #int list
 文综 = ["政治","地理","历史"]
 def proprint(s):
     lock.acquire()
@@ -63,6 +62,7 @@ def 凎(course_id:int):
     if '18级' in title or '高二' in title:
         logging.info(f"[SKIP]    {course_id} is '18级'")
         return
+    
     #GENERATE HEADERS
     headers = {
     'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',

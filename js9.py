@@ -1,4 +1,6 @@
-import threading,re,sqlite3,time
+import threading
+import sqlite3
+import time
 from queue import Queue
 
 import requests
@@ -70,6 +72,7 @@ if 2 in Mode:
         conn.execute('INSERT INTO demand VALUES(?,?,?,?,?,?)',\
                     c.generate_std_tuple())
         print("INSERT",c)
+
 # Mode 1 Use javascript
 if 1 in Mode:
     print("Running@Mode1")
@@ -91,15 +94,16 @@ if 1 in Mode:
             totalPageSize = int(dat['page']['totalPageSize'])
         currentPage += 1
         for x in dat['entity']:
-            PROCESS_COUNT += 1
             c = stdModel.CourseModel(int(x['id']),x['subjectName'],x['grade'],x['courseName'],x['schoolName'],x['teacher']['name'])
             # search id in db AND grade=='0'?
             found_items = conn.execute("SELECT * FROM demand WHERE id=?",(c.id,)).fetchall()
             if found_items == []:
                 print("INSERT",c)
+                PROCESS_COUNT += 1
                 conn.execute("INSERT INTO demand VALUES(?,?,?,?,?,?)",c.generate_std_tuple())
             elif found_items[0][2] == '0':
                 print("UPDATE",c)
+                PROCESS_COUNT += 1
                 conn.execute("UPDATE demand SET grade=? WHERE id=?",(c.grade,c.id))
             else:
                 pass

@@ -5,7 +5,3 @@ cd D:\Documents\Programs\gaomengkai.github.io
 git add .
 git commit -m "Updating"
 git push origin master
-cd D:\Documents\Programs\netClassVideoDownloader
-git add 3.csv
-git commit -m "3csv Update"
-git push origin master
