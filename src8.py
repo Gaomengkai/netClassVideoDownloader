@@ -185,6 +185,8 @@ def make_a_md_file(courses_list,filename,title='netClass Video List',category='n
         f.write("date: " + localtime + "\n")
         f.write("category: %s"%category + "\n\n")
         f.write("### 说明：其他年级请到上边的选项条找，找不着的可能在未知\n\n")
+        f.write("### 随着源网站的日渐完善，本站即将停止更新，感谢大家的支持和帮助\n\n")
+        f.write('#### 官网链接：[吉林市互联网学校](https://school.jledu.com/index "这里是官网")\n\n')
         f.write("#### Updated at {}\n\n".format(localtime))
         f.write("#### 最近更新： {}\n\n".format(localtime))
         for c in courses_list:

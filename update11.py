@@ -7,8 +7,26 @@ import src8 as src
 import stdModel as mdl
 
 START = 6158
-END = 8000 #Only import JLYZ
+END = 9000 #Only import JLYZ
 
+# get args
+import sys
+if len(sys.argv)>1:
+    _p=1
+    while True:
+        if sys.argv[_p] == '-s' or sys.argv[_p].upper == '--START':
+            _p += 1
+            START = int(sys.argv[_p])
+            _p += 1
+        elif sys.argv[_p] == '-e' or sys.argv[_p].upper == '--END':
+            _p += 1
+            END = int(sys.argv[_p])
+            _p += 1
+        else:
+            _p += 1
+        if _p >= len(sys.argv):
+            break
+    del _p
 # import data from database
 data_base_filename = "data2.db"
 conn = sqlite3.connect(data_base_filename)
@@ -58,4 +76,4 @@ src.make_a_md_file(c0,"D:\\Documents\\Programs\\blog\\content\\" + "wz.md","é«˜ä
 # update blog
 src.update_blog("D:\\Documents\\Programs\\blog\\","D:\\Documents\\Programs\\gaomengkai.github.io\\")
 
-print("\nF I N I S H E D")
+print("\nF I N I S H E D\n")

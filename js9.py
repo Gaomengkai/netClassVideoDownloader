@@ -8,8 +8,26 @@ import stdModel
 
 import src8
 
-START = 6158;END = 8000
+START = 6158;END = 8500
 PROCESS_COUNT = 0
+# get args
+import sys
+if len(sys.argv)>1:
+    _p=1
+    while True:
+        if sys.argv[_p] == '-s' or sys.argv[_p].upper == '--START':
+            _p += 1
+            START = int(sys.argv[_p])
+            _p += 1
+        elif sys.argv[_p] == '-e' or sys.argv[_p].upper == '--END':
+            _p += 1
+            END = int(sys.argv[_p])
+            _p += 1
+        else:
+            _p += 1
+        if _p >= len(sys.argv):
+            break
+
 # Mode[1]: only javascript
 # Mode[2]: only HTML
 # Mode[1,2]: both HTML and javascript
@@ -18,7 +36,7 @@ Mode = [2,1]
 # Initialize Web Request Params and Solid Data
 url = r'https://school.jledu.com/front/demand/demand_list_one'
 currentPage = 1
-pageSize = 20
+pageSize = 50
 
 # Connect to Database
 conn = sqlite3.connect("data2.db")
@@ -55,7 +73,7 @@ if 2 in Mode:
             except StopIteration:
                 q.put(None)
                 return
-    _max_threads = 4
+    _max_threads = 20
     _threads = []
     for _ in range(_max_threads):
         _threads.append(threading.Thread(target=get_c))
@@ -85,7 +103,10 @@ if 1 in Mode:
             'queryDemand.demandType':1
         }
         for _ in range(4):
-            dat = requests.get(url, params=params)
+            try:
+                dat = requests.get(url, params=params)
+            except requests.ConnectionError:
+                continue
             if dat.status_code == 200:
                 break
             time.sleep(0.5)

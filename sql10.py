@@ -1,7 +1,7 @@
-import threading,re,requests,os.path,logging,src8,sqlite3
+import threading,re,requests,os.path,logging,src8,sqlite3,sys
 
 conn = sqlite3.connect("data2.db")
-START = 6158;END=8000
+START = 6158;END=9000
 se=(START,END)
 sql_1 = """
 SELECT teacher,grade
@@ -46,8 +46,14 @@ for x in total:
 
 #遍历bigDict 查元素 有没有重的
 for x in bigDict.keys():
-    if len(bigDict[x]['exist']) > 2:
+    if '0' in bigDict[x]['exist'] and len(bigDict[x]['exist']) > 2:
+        print('多了，手动查一遍')
+        os.system('PAUSE')
         raise Exception("多了，手动查一遍")
+    if '0' not in bigDict[x]['exist'] and len(bigDict[x]['exist'])>1:
+        print('多了，手动查一遍')
+        os.system('PAUSE')
+        raise Exception("重了，手动查一遍")
 
 d3 = dict()
 for x in bigDict.keys():
@@ -61,7 +67,11 @@ for x in d3.keys():
         print(f"INFLUENCE: {y[0]} -> {d3[x]}")
         infl += 1
 print(f"TOTAL INFLUENCE: {infl}")
-if input("Continue?\n") == 'y':
+auto = False
+if len(sys.argv)>1:
+    if sys.argv[1]=="--auto":
+        auto = True
+if auto or input("Continue?\n") == 'y':
     for x in d3.keys():
         conn.execute("UPDATE demand SET grade=? WHERE teacher=?\
             and school='吉林市第一中学' and id between ? and ?",

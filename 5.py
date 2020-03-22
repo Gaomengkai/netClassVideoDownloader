@@ -9,9 +9,31 @@ lock = threading.Lock()
 logging.basicConfig(level=logging.INFO)
 __author__ = "Gao Mengkai"
 
-START = 7350
-END = 8100
+START = 7900
+END = 8500
 MAX_THREADS = 4
+
+# get args
+import sys
+if len(sys.argv)>1:
+    _p=1
+    while True:
+        if sys.argv[_p] == '-s' or sys.argv[_p].upper == '--START':
+            _p += 1
+            START = int(sys.argv[_p])
+            _p += 1
+        elif sys.argv[_p] == '-e' or sys.argv[_p].upper == '--END':
+            _p += 1
+            END = int(sys.argv[_p])
+            _p += 1
+        elif sys.argv[_p] == '-t' or sys.argv[_p] == '--threads':
+            _p += 1
+            MAX_THREADS = int(sys.argv[_p])
+            _p += 1
+        else:
+            _p += 1
+        if _p >= len(sys.argv):
+            break
 q = Queue()
 course_ids = iter(range(START,END+1))
 finished_ids = [] #int list
@@ -36,7 +58,6 @@ def 凎(course_id:int):
             break
         except requests.ConnectionError:
             time.sleep(0.5)
-    r = requests.get(page_URL)
     if r.status_code != 200:
         return
     text = r.text
@@ -59,7 +80,7 @@ def 凎(course_id:int):
 
     #GET TITLE
     title = re.findall("<p class=\"title\">(.*)</p>",text)[0]
-    if '18级' in title or '高二' in title:
+    if '18级' in title or '高二' in title or '文科' in title:
         logging.info(f"[SKIP]    {course_id} is '18级'")
         return
     
@@ -70,7 +91,7 @@ def 凎(course_id:int):
     }
 
     #DOWNLOAD AND SAVE FILE
-    local_path = "F:\\netClass\\"
+    local_path = f"F:\\netClass\\{subject}\\"
     local_file_name = f"{subject}_{course_id}_{title}.mp4"
     if os.path.isfile(local_path + local_file_name):#if file already exists
         #To check if file is completed
